@@ -255,7 +255,7 @@ async function handleFormSubmit(event, scriptUrl) {
         // Assume que o envio foi bem-sucedido após 3 segundos (se não houver resposta)
         setTimeout(() => {
             statusDiv.className = 'alert alert-success mt-3';
-            statusDiv.textContent = 'Dados enviados com sucesso! (Se houver algum problema, verifique a planilha)';
+            statusDiv.textContent = 'Dados enviados com sucesso!';
             
             // Limpa o formulário
             setTimeout(() => {
