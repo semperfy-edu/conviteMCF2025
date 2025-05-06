@@ -4,8 +4,8 @@
 <hr>
 <div class="row g-3 mb-3">
     <div class="col-md-6 mt-3">
-        <label class="form-label fw-medium text-body-secondary">É a primeira vez que você visita a Medical Cannabis Fair?</label>
-        <select class="form-select shadow-sm" aria-label="Default select example">
+        <label for="visitaMCF" class="form-label fw-medium text-body-secondary">É a primeira vez que você visita a Medical Cannabis Fair?</label>
+        <select class="form-select shadow-sm" id="visitaMCF" name="visitaMCF">
             <option selected>Selecione uma opção</option>
             <option value="Sim">Sim</option>
             <option value="Não">Não</option>
@@ -14,21 +14,21 @@
         <label class="form-label mt-3">Qual o objetivo da sua visita a Medical Cannabis Fair 2025? (Marque todas
             aplicáveis)</label>
         <div class="border shadow-sm p-2">
-            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo1" name="objetivoVisita"
+            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo1" name="objetivo1"
                     value="Conhecer novos remédios a base de cannabis"><label for="objetivo1">Conhecer novos remédios a
                     base
                     de cannabis</label></div>
-            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo2" name="objetivoVisita"
+            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo2" name="objetivo2"
                     value="Conhecer novos laboratórios"><label for="objetivo2">Conhecer novos laboratórios</label></div>
-            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo3" name="objetivoVisita"
+            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo3" name="objetivo3"
                     value="Obter conhecimentos sobre o uso medicinal da cannabis"><label for="objetivo3">Obter
                     conhecimentos
                     sobre o uso medicinal da cannabis</label></div>
-            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo4" name="objetivoVisita"
+            <div class="form-check"><input type="checkbox" class="form-check-input" id="objetivo4" name="objetivo4"
                     value="Relacionamento"><label for="objetivo4">Relacionamento</label></div>
         </div>
-        <label class="form-label mt-3">Já fez algum curso sobre cannabis?</label>
-        <select class="form-select shadow-sm" aria-label="Default select example">
+        <label for="fazCurso" class="form-label mt-3">Já fez algum curso sobre cannabis?</label>
+        <select class="form-select shadow-sm" id="fazCurso" name="fazCurso">
             <option selected>Selecione uma opção</option>
             <option value="Sim">Sim</option>
             <option value="Não">Não</option>
@@ -49,9 +49,9 @@
         <label for="comoSoubeFeiraOutro" class="form-label fw-medium text-body-secondary">Soube de outra forma, qual?</label>
         <input type="text" id="comoSoubeFeiraOutro" name="comoSoubeFeiraOutro" class="form-control shadow-sm">
 
-        <label for="comoSoubeFeira" class="form-label mt-3">Qual sua principal fonte de informação sobre assuntos
+        <label for="fonteInfo" class="form-label mt-3">Qual sua principal fonte de informação sobre assuntos
             médicos relacionados a cannabis?</label>
-        <select id="comoSoubeFeira" class="form-select shadow-sm" name="comoSoubeFeira">
+        <select id="fonteInfo" class="form-select shadow-sm" name="fonteInfo">
             <option selected>Selecione uma opção</option>
             <option value="Artigos Científicos">Artigos Científicos</option>
             <option value="Congressos/Eventos">Congressos/Eventos</option>

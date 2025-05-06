@@ -13,9 +13,9 @@
     <div class="col-md-6">
         <div class="row">
             <div class="col">
-                <label class="form-label fw-medium text-body-secondary">Qual a porcentagem entre terapia canabinóide e alopática na sua
+                <label for="terapiaPorcento" class="form-label fw-medium text-body-secondary">Qual a porcentagem entre terapia canabinóide e alopática na sua
                     prescrição?</label>
-                <select class="form-select shadow-sm" aria-label="Default select example">
+                <select class="form-select shadow-sm" id="terapiaPorcento" name="terapiaPorcento">
                     <option selected>Selecione uma opção</option>
                     <option value="100% Alopatia - 0% Cannabis">100% Alopatia - 0% Cannabis</option>
                     <option value="75% Alopatia - 25% Cannabis">75% Alopatia - 25% Cannabis</option>
@@ -24,11 +24,11 @@
                     <option value="0% Alopatia - 100% Cannabis">0% Alopatia - 100% Cannabis</option>
                 </select>
            <br>
-                <label class="form-label fw-medium text-body-secondary">Qual modalidade você utiliza para que seus pacientes tenham acesso a
+                <label for="modalidade" class="form-label fw-medium text-body-secondary">Qual modalidade você utiliza para que seus pacientes tenham acesso a
                     medicamentos
                     a
                     base de cannabis?</label>
-                <select class="form-select shadow-sm" aria-label="Default select example">
+                <select class="form-select shadow-sm" id="modalidade" name="modalidade">
                     <option selected>Selecione uma opção</option>
                     <option value="Associação">Associação</option>
                     <option value="RDC 660 - Importação">RDC 660 - Importação</option>
@@ -40,31 +40,31 @@
                 <label class="form-label fw-medium text-body-secondary">Para quais patologias você prescreve? (Marque todas aplicáveis)</label>
                 <div class="border shadow-sm p-2">
                     <div class="form-check"><input type="checkbox" class="form-check-input" id="patologia1"
-                            name="patologias" value="Cuidados Paliativos e condições raras"><label
+                            name="patologia1" value="Cuidados Paliativos e condições raras"><label
                             class="form-check-label" for="patologia1">Cuidados Paliativos e condições raras</label>
                     </div>
                     <div class="form-check"><input type="checkbox" class="form-check-input" id="patologia2"
-                            name="patologias" value="Disturbios do Humor"><label class="form-check-label"
+                            name="patologia2" value="Disturbios do Humor"><label class="form-check-label"
                             for="patologia2">Distúrbios do
                             Humor</label></div>
                     <div class="form-check"><input type="checkbox" class="form-check-input" id="patologia3"
-                            name="patologias" value="Doenças Inflamatórias"><label class="form-check-label"
+                            name="patologia3" value="Doenças Inflamatórias"><label class="form-check-label"
                             for="patologia3">Doenças
                             Inflamatórias</label></div>
                     <div class="form-check"><input type="checkbox" class="form-check-input" id="patologia4"
-                            name="patologias" value="Doenças Neurodegenerativas"><label class="form-check-label"
+                            name="patologia4" value="Doenças Neurodegenerativas"><label class="form-check-label"
                             for="patologia4">Doenças
                             Neurodegenerativas</label></div>
                     <div class="form-check"><input type="checkbox" class="form-check-input" id="patologia5"
-                            name="patologias" value="Indução do sono"><label class="form-check-label"
+                            name="patologia5" value="Indução do sono"><label class="form-check-label"
                             for="patologia5">Indução do sono</label>
                     </div>
                     <div class="form-check"><input type="checkbox" class="form-check-input" id="patologia6"
-                            name="patologias" value="Tratamento de dor"><label class="form-check-label"
+                            name="patologia6" value="Tratamento de dor"><label class="form-check-label"
                             for="patologia6">Tratamento de dor</label>
                     </div>
                     <div class="form-check"><input type="checkbox" class="form-check-input" id="patologia7"
-                            name="patologias" value="Outras"><label class="form-check-label"
+                            name="patologia7" value="Outras"><label class="form-check-label"
                             for="patologia7">Outras</label>
                     </div>
                 </div>
@@ -75,8 +75,8 @@
     <div class="col-md-6">
         <div class="row">
             <div class="col">
-                <label class="form-label fw-medium text-body-secondary">Qual média de pacientes que você trata com canabinoides mensalmente?</label>
-                <select class="form-select shadow-sm" aria-label="Default select example">
+                <label for="mediaPacientes" class="form-label fw-medium text-body-secondary">Qual média de pacientes que você trata com canabinoides mensalmente?</label>
+                <select id="mediaPacientes" name="mediaPacientes" class="form-select shadow-sm">
                     <option selected>Selecione uma opção</option>
                     <option value="1 - 10">1 - 10</option>
                     <option value="11 - 50">11 - 50</option>
@@ -84,16 +84,16 @@
                     <option value="Mais de 100">Mais de 100</option>
                 </select>
            <br>
-                <label class="form-label fw-medium text-body-secondary">Você receita remédio com dose acima de 2mg de THC?</label>
-                <select class="form-select shadow-sm" aria-label="Default select example">
+                <label for="receitaDose" class="form-label fw-medium text-body-secondary">Você receita remédio com dose acima de 2mg de THC?</label>
+                <select class="form-select shadow-sm" id="receitaDose" name="receitaDose">
                     <option selected>Selecione uma opção</option>
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
                 </select>
            <br>
-                <label class="form-label fw-medium text-body-secondary">Em que estágio da doença você costuma prescrever medicamentos a base de
+                <label for="estagioDoenca" class="form-label fw-medium text-body-secondary">Em que estágio da doença você costuma prescrever medicamentos a base de
                     cannabis?</label>
-                <select class="form-select shadow-sm" aria-label="Default select example">
+                <select class="form-select shadow-sm" id="estagioDoenca" name="estagioDoenca">
                     <option selected>Selecione uma opção</option>
                     <option value="Leve">Leve</option>
                     <option value="Leve a moderada">Leve a moderada</option>
