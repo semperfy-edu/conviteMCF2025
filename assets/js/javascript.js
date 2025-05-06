@@ -1,169 +1,310 @@
+/**
+ * Este arquivo contém as funções necessárias para:
+ * 1. Coletar dados de todas as etapas do formulário multi-etapas
+ * 2. Converter para JSON no formato correto
+ * 3. Enviar os dados para o Google Apps Script
+ * 4. Tratar respostas e erros
+ */
+
+// --------- FUNÇÕES PARA O MULTI-STEP FORM ---------
 
 let currentStep = 1;
-const totalSteps = 4;
+const totalSteps = 7; // Total de passos do seu formulário
 
-function showStep(step) {
-    for (let i = 1; i <= totalSteps; i++) {
-        document.getElementById(`step-${i}`).classList.add('d-none');
+// Função para mostrar o passo correto
+function showStep(stepNumber) {
+    document.querySelectorAll('.form-step').forEach((stepEl) => {
+        stepEl.classList.remove('active');
+    });
+    const activeStepElement = document.getElementById(`step-${stepNumber}`);
+    if (activeStepElement) {
+        activeStepElement.classList.add('active');
+        // Carrega o conteúdo se ainda não foi carregado (lazy loading)
+        loadStepContent(stepNumber);
     }
-    document.getElementById(`step-${step}`).classList.remove('d-none');
-    updateProgress(step);
+    updateNavigationButtons();
+    updateProgressBar();
 }
 
-function nextStep() {
-    if (currentStep < totalSteps) {
-        currentStep++;
-        if (currentStep === 4) {
-            loadPreview();
+// Função para carregar o conteúdo do passo
+async function loadStepContent(stepNumber) {
+    const containerId = `step-${stepNumber}`;
+    const stepFile = `./assets/html/passo${stepNumber}.html`;
+    const container = document.getElementById(containerId);
+
+    if (!container) {
+        console.error(`Container #${containerId} não encontrado.`);
+        return;
+    }
+
+    // Verifica se já foi carregado para evitar trabalho desnecessário
+    if (container.dataset.loaded === 'true') {
+        initializeComponentsInStep(container, stepNumber);
+        return;
+    }
+
+    // Mostra indicador de carregamento
+    container.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
+
+    try {
+        const response = await fetch(stepFile);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
         }
+
+        const html = await response.text();
+        container.innerHTML = html;
+        container.dataset.loaded = 'true';
+
+        // Inicializa componentes dinâmicos (select2, etc)
+        initializeComponentsInStep(container, stepNumber);
+
+    } catch (error) {
+        console.error(`Erro ao carregar conteúdo do Passo ${stepNumber}:`, error);
+        if (container) {
+            container.innerHTML = `<p class="text-danger text-center fw-bold p-4">Erro ao carregar conteúdo do Passo ${stepNumber}.<br><small>Verifique o console (F12) e o caminho do arquivo: ${stepFile}</small></p>`;
+        }
+    }
+}
+
+// Inicializa componentes JS dentro de um container específico
+function initializeComponentsInStep(containerElement, stepNumber) {
+    // Verifica se jQuery e Select2 estão carregados
+    if (typeof $ !== 'function' || typeof $.fn.select2 !== 'function') {
+        console.error('jQuery ou Select2 não estão disponíveis');
+        return;
+    }
+
+    // Inicializa select2 se existir
+    const selectElements = $(containerElement).find('select');
+    selectElements.each(function() {
+        const $select = $(this);
+        if (!$select.hasClass('select2-hidden-accessible')) {
+            $select.select2({
+                theme: 'bootstrap4',
+                placeholder: `Selecione uma opção`,
+                allowClear: true
+            });
+        }
+    });
+    
+    // Inicializa máscaras para inputs específicos se necessário
+    const cpfInput = $(containerElement).find('#cpf');
+    if (cpfInput.length > 0 && typeof cpfInput.mask === 'function') {
+        cpfInput.mask('000.000.000-00');
+    }
+    
+    const telefoneInput = $(containerElement).find('#telefone, #celular');
+    if (telefoneInput.length > 0 && typeof telefoneInput.mask === 'function') {
+        telefoneInput.mask('(00) 00000-0000');
+    }
+}
+
+// Função para atualizar os botões de navegação
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    prevBtn.disabled = (currentStep === 1);
+    nextBtn.style.display = (currentStep === totalSteps) ? 'none' : 'inline-block';
+    submitBtn.style.display = (currentStep === totalSteps) ? 'inline-block' : 'none';
+}
+
+// Função para atualizar a barra de progresso
+function updateProgressBar() {
+    const progressBar = document.querySelector('.progress-bar');
+    if (progressBar) {
+        const progress = (currentStep / totalSteps) * 100;
+        progressBar.style.width = `${progress}%`;
+        progressBar.textContent = `Passo ${currentStep}`;
+        progressBar.setAttribute('aria-valuenow', currentStep);
+    }
+}
+
+// Função de navegação entre passos
+function navigateStep(direction) {
+    // Opcionalmente, adicione validação do passo atual aqui
+    // if (direction > 0 && !validateStep(currentStep)) return;
+
+    const nextStep = currentStep + direction;
+    if (nextStep >= 1 && nextStep <= totalSteps) {
+        currentStep = nextStep;
         showStep(currentStep);
     }
 }
 
-function prevStep() {
-    if (currentStep > 1) {
-        currentStep--;
-        showStep(currentStep);
-    }
-}
-
-function updateProgress(step) {
-    const progress = (step / totalSteps) * 100;
-    const progressBar = document.getElementById('progress-bar');
-    progressBar.style.width = progress + '%';
-
-    let texto = '';
-    switch (step) {
-        case 1: texto = 'Passo 1/3 - Dados Pessoais'; break;
-        case 2: texto = 'Passo 2/3 - Dados de Endereço'; break;
-        case 3: texto = 'Passo 3/3 - Redes Sociais'; break;
-        case 4: texto = 'Passo 3/3 - Dados Para o Evento'; break;
-    }
-    progressBar.innerText = texto;
-}
-
-function loadPreview() {
-    // Pegue os valores dos campos e preencha na visualização
-    document.getElementById('preview-campo1').innerText = document.querySelector('[name="campo1"]')?.value || '---';
-    document.getElementById('preview-campo2').innerText = document.querySelector('[name="campo2"]')?.value || '---';
-}
-
-// Inicializa o primeiro step
-showStep(currentStep);
-
-
-
-
+// --------- FUNÇÕES PARA ENVIAR O FORMULÁRIO ---------
 
 /**
- * Função para ser chamada no evento 'submit' do formulário.
- * Previne o envio padrão, coleta os dados, converte para JSON e envia via Fetch API.
+ * Função principal para ser chamada no evento 'submit' do formulário.
+ * Esta função coleta TODOS os dados do formulário multi-etapas,
+ * independente de qual etapa está visível no momento.
  *
- * @param {Event} event O evento de submit.
- * @param {string} scriptUrl A URL do seu Web App Apps Script (endpoint doPost).
+ * @param {Event} event O evento de submit
+ * @param {string} scriptUrl A URL do seu Web App do Google Apps Script
  */
 async function handleFormSubmit(event, scriptUrl) {
-    event.preventDefault(); // Impede o envio padrão do formulário
-  
-    const form = event.target; // O próprio elemento <form> que disparou o evento
-    const submitButton = form.querySelector('button[type="submit"]'); // Encontra o botão de submit
-    const statusDiv = document.getElementById('status'); // Assumindo que você tem uma div com id="status" para mensagens
-  
-    // Desabilita o botão e mostra status
+    event.preventDefault();
+    
+    // Elementos de UI para feedback
+    const form = event.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    // Cria um elemento de status se não existir
+    let statusDiv = document.getElementById('status');
+    if (!statusDiv) {
+        statusDiv = document.createElement('div');
+        statusDiv.id = 'status';
+        statusDiv.className = 'alert mt-3';
+        form.appendChild(statusDiv);
+    }
+    
+    // Feedback visual: desabilita botão e mostra mensagem
     if (submitButton) submitButton.disabled = true;
-    if (statusDiv) {
-        statusDiv.textContent = 'Enviando...';
-        statusDiv.className = 'status-message info'; // Use classes CSS para estilo
-        statusDiv.style.display = 'block';
-    }
-  
-    // 1. Coleta os dados usando FormData (maneira mais fácil e completa)
-    const formData = new FormData(form);
-  
-    // 2. Converte FormData para um objeto JavaScript simples
-    const dataObject = {};
-    formData.forEach((value, key) => {
-      // Refinamento para checkboxes com mesmo nome (cria array)
-      if (dataObject.hasOwnProperty(key)) {
-        if (Array.isArray(dataObject[key])) {
-          dataObject[key].push(value);
-        } else {
-          dataObject[key] = [dataObject[key], value];
-        }
-      } else {
-        // Se for um checkbox pode ter só um valor, mas vamos padronizar como array se nome sugere multiplos
-        // Ou verificar o tipo do elemento: const element = form.elements[key]; if(element.type === 'checkbox' && document.querySelectorAll(`[name="${key}"]`).length > 1) ...
-        // Simplificação: Assumir que nomes com [] no final indicam arrays ou tratar no backend
-        // OU apenas enviar o último valor se nomes forem iguais (comportamento padrão de FormData para objeto simples)
-        dataObject[key] = value;
-      }
-    });
-  
-    // 3. Converte o objeto para JSON
-    const jsonData = JSON.stringify(dataObject);
-  
-    // 4. Envia usando a API Fetch do navegador
+    statusDiv.className = 'alert alert-info mt-3';
+    statusDiv.textContent = 'Enviando dados, aguarde...';
+    statusDiv.style.display = 'block';
+    
     try {
-      const response = await fetch(scriptUrl, {
-        method: 'POST',
-        // mode: 'cors', // Geralmente não necessário para POST simples no Apps Script, mas pode ser preciso em alguns casos. Teste sem primeiro.
-        headers: {
-          // NÃO defina 'Content-Type': 'application/json' aqui se estiver enviando FormData diretamente.
-          // MAS, como convertemos para JSON string, precisamos definir:
-           'Content-Type': 'application/json',
-        },
-        body: jsonData // Envia a string JSON
-        // Se fosse enviar FormData direto (sem JSON.stringify): body: formData // NÃO definir Content-Type nesse caso
-      });
-  
-      // Verifica se a resposta da rede foi OK
-      if (!response.ok) {
-         // Tenta ler a resposta de erro do Apps Script (se houver)
-         let errorMsg = `HTTP error! status: ${response.status}`;
-         try {
-           const errorData = await response.json(); // Tenta parsear como JSON
-           errorMsg = errorData.message || JSON.stringify(errorData);
-         } catch (e) {
-           // Se não for JSON, pega o texto
-           errorMsg = await response.text();
-         }
-         throw new Error(errorMsg);
-      }
-  
-      // Processa a resposta do seu script Apps Script (que definimos para retornar JSON)
-      const result = await response.json();
-  
-      console.log('Resposta do script:', result);
-      if (result.result === 'success') {
-        // Sucesso! Mostra mensagem, limpa o formulário, etc.
-        if (statusDiv) {
-            statusDiv.textContent = result.message || 'Enviado com sucesso!';
-            statusDiv.className = 'status-message success';
+        // Coleta TODOS os dados do formulário (de todos os passos)
+        const formData = collectAllFormData(form);
+        
+        // Adiciona timestamp do cliente
+        formData.timestamp = new Date().toISOString();
+        
+        // Converte para JSON
+        const jsonData = JSON.stringify(formData);
+        
+        console.log('Dados sendo enviados:', formData);
+        
+        // Envio via fetch API
+        const response = await fetch(scriptUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: jsonData
+        });
+        
+        // Verifica resposta HTTP
+        if (!response.ok) {
+            let errorMsg = `Erro HTTP: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                errorMsg = errorData.message || JSON.stringify(errorData);
+            } catch (e) {
+                errorMsg = await response.text();
+            }
+            throw new Error(errorMsg);
         }
-        form.reset(); // Limpa o formulário
-      } else {
-        // Erro reportado pelo script Apps Script
-        throw new Error(result.message || 'Erro desconhecido retornado pelo script.');
-      }
-  
+        
+        // Processa a resposta do Apps Script
+        const result = await response.json();
+        
+        if (result.result === 'success') {
+            // Sucesso! Mostra mensagem e limpa o formulário
+            statusDiv.className = 'alert alert-success mt-3';
+            statusDiv.textContent = result.message || 'Dados enviados com sucesso!';
+            
+            // Aguarda 2 segundos e limpa o formulário
+            setTimeout(() => {
+                form.reset();
+                // Opcional: Retorna para o primeiro passo
+                currentStep = 1;
+                showStep(currentStep);
+            }, 2000);
+        } else {
+            // Erro reportado pelo script
+            throw new Error(result.message || 'Erro desconhecido retornado pelo servidor.');
+        }
+        
     } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
-      if (statusDiv) {
-          statusDiv.textContent = `Erro: ${error.message}`;
-          statusDiv.className = 'status-message error';
-      }
+        console.error('Erro ao enviar formulário:', error);
+        statusDiv.className = 'alert alert-danger mt-3';
+        statusDiv.textContent = `Erro: ${error.message}`;
     } finally {
-      // Reabilita o botão independentemente do resultado
-      if (submitButton) submitButton.disabled = false;
+        // Reabilita o botão de submissão
+        if (submitButton) submitButton.disabled = false;
     }
-  }
-  
-  // Como usar: Adicione um listener ao seu formulário no HTML
-  // Presumindo que seu formulário tem id="multiStepForm" e a URL do script está numa variável
-  
-  // const meuFormulario = document.getElementById('multiStepForm');
-  // const scriptURL = 'URL_DO_SEU_WEB_APP_APPS_SCRIPT_TERMINADA_EM_EXEC';
-  //
-  // meuFormulario.addEventListener('submit', (event) => {
-  //   handleFormSubmit(event, scriptURL);
-  // });
+}
+
+/**
+ * Coleta todos os dados de um formulário multi-etapas,
+ * incluindo dados de etapas não visíveis atualmente.
+ * 
+ * @param {HTMLFormElement} form O elemento do formulário
+ * @returns {Object} Objeto com todos os dados do formulário
+ */
+function collectAllFormData(form) {
+    const dataObject = {};
+    
+    // Coleta todos os campos de input, select e textarea em TODOS os passos
+    const formElements = form.querySelectorAll('input, select, textarea');
+    
+    formElements.forEach(element => {
+        // Ignora elementos sem nome
+        if (!element.name) return;
+        
+        const name = element.name;
+        
+        // Tratamento específico por tipo de elemento
+        switch (element.type) {
+            case 'checkbox':
+                // Para checkboxes, apenas adiciona valor se estiver marcado
+                if (element.checked) {
+                    // Verifica se já existe um valor para este nome (para grupos de checkboxes)
+                    if (dataObject.hasOwnProperty(name)) {
+                        if (Array.isArray(dataObject[name])) {
+                            dataObject[name].push(element.value);
+                        } else {
+                            dataObject[name] = [dataObject[name], element.value];
+                        }
+                    } else {
+                        dataObject[name] = element.value;
+                    }
+                }
+                break;
+                
+            case 'radio':
+                // Para radio buttons, adiciona valor apenas se estiver selecionado
+                if (element.checked) {
+                    dataObject[name] = element.value;
+                }
+                break;
+                
+            case 'select-multiple':
+                // Para select múltiplo, coleta todos os valores selecionados
+                const selectedOptions = Array.from(element.selectedOptions).map(opt => opt.value);
+                dataObject[name] = selectedOptions;
+                break;
+                
+            case 'file':
+                // Arquivos não podem ser enviados diretamente via JSON
+                // Você precisaria implementar upload separado ou usar Base64
+                break;
+                
+            default:
+                // Para outros tipos de input (text, email, etc)
+                dataObject[name] = element.value;
+        }
+    });
+    
+    return dataObject;
+}
+
+// Inicializa o formulário quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa o primeiro passo
+    showStep(1);
+    
+    // Adiciona handler de submit ao formulário
+    const form = document.getElementById('multiStepForm');
+    if (form) {
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwcMyYLy7lM6EASZzCGF4sRsYKH2xo7bCJfh7cPZm61Lo4pPuwZuhyDEvI52zPYgqVbJw/exec';
+        form.addEventListener('submit', (event) => {
+            handleFormSubmit(event, scriptURL);
+        });
+    }
+});
