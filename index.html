@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário Multi-Steps</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <style>
         /* Esconde todos os passos por padrão */
         .form-step {
@@ -30,66 +35,189 @@
                     aria-valuemax="100">Passo 1</div>
             </div>
             <div id="people-form" class="card-body p-4">
-            <form id="multiStepForm">
-                <div id="step-1" class="form-step active">
-                    <p>Carregando Passo 1...</p>
-                </div>
+                <form id="multiStepForm">
+                    <div id="step-1" class="form-step active">
+                        <p>Carregando Passo 1...</p>
+                    </div>
 
-                <div id="step-2" class="form-step">
-                    <p>Carregando Passo 2...</p>
-                </div>
+                    <div id="step-2" class="form-step">
+                        <p>Carregando Passo 2...</p>
+                    </div>
 
-                <div id="step-3" class="form-step">
-                    <p>Carregando Passo 3...</p>
-                </div>
+                    <div id="step-3" class="form-step">
+                        <p>Carregando Passo 3...</p>
+                    </div>
 
-                <div id="step-4" class="form-step">
-                    <p>Carregando Passo 4...</p>
-                </div>
+                    <div id="step-4" class="form-step">
+                        <p>Carregando Passo 4...</p>
+                    </div>
 
-                <div id="step-5" class="form-step">
-                    <p>Carregando Passo 5...</p>
-                </div>
+                    <div id="step-5" class="form-step">
+                        <p>Carregando Passo 5...</p>
+                    </div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="navigateStep(-1)"
-                        disabled>Anterior</button>
-                    <button type="button" class="btn btn-primary" id="nextBtn"
-                        onclick="navigateStep(1)">Próximo</button>
-                    <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">Enviar</button>
-                </div>
-            </form>
+                    <div id="step-6" class="form-step">
+                        <p>Carregando Passo 6...</p>
+                    </div>
+
+                    <div id="step-7" class="form-step">
+                        <p>Carregando Passo 7...</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="button" class="btn btn-secondary" id="prevBtn" onclick="navigateStep(-1)"
+                            disabled>Anterior</button>
+                        <button type="button" class="btn btn-primary" id="nextBtn"
+                            onclick="navigateStep(1)">Próximo</button>
+                        <button type="submit" class="btn btn-success" id="submitBtn"
+                            style="display: none;">Enviar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        let currentStep = 1;
-        const totalSteps = 5; // Defina o número total de passos
 
-        // Função para carregar conteúdo HTML via Fetch
-        async function loadStepContent(stepNumber) {
-            const containerId = `step-${stepNumber}`;
-            const stepFile = `./assets/html/passo${stepNumber}.html`; // Nome do arquivo HTML do passo
-            const container = document.getElementById(containerId);
 
-            if (!container || container.dataset.loaded === 'true') {
-                // Não carrega se não achar o container ou se já foi carregado
-                return;
+        const meuFormulario = document.getElementById('multiStepForm');
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwcMyYLy7lM6EASZzCGF4sRsYKH2xo7bCJfh7cPZm61Lo4pPuwZuhyDEvI52zPYgqVbJw/exec';
+
+        meuFormulario.addEventListener('submit', (event) => {
+            handleFormSubmit(event, scriptURL);
+        });
+
+
+
+
+        /**
+  * Inicializa componentes JS dentro de um container específico.
+  * @param {HTMLElement} containerElement O elemento div do passo (ex: #step-1)
+  * @param {number} stepNumber O número do passo que foi carregado
+  */
+        function initializeComponentsInStep(containerElement, stepNumber) {
+            // 1. Verifica se a função está sendo chamada
+            // console.log(`[DEBUG] Tentando inicializar Passo ${stepNumber}. Container:`, containerElement);
+
+            // 2. Verifica se jQuery e Select2 estão carregados NESTE MOMENTO
+            if (typeof $ !== 'function') {
+                // console.error('[DEBUG] ERRO: jQuery ($) não está definido neste ponto!');
+                return; // Interrompe se jQuery não existe
+            }
+            if (typeof $.fn.select2 !== 'function') {
+                // console.error('[DEBUG] ERRO: Função Select2 ($.fn.select2) não está definida neste ponto!');
+                return; // Interrompe se Select2 não existe
+            }
+            // console.log('[DEBUG] jQuery e $.fn.select2 estão disponíveis.');
+
+            // 3. Tenta encontrar o elemento #country DENTRO do container fornecido
+            const countrySelect = $(containerElement).find('#country');
+            // console.log(`[DEBUG] Procurando por #country dentro do container do Passo ${stepNumber}. Elementos encontrados:`, countrySelect.length);
+
+            if (countrySelect.length > 0) {
+                // console.log('[DEBUG] Elemento #country encontrado:', countrySelect[0]); // Mostra o elemento DOM
+
+                // 4. Verifica se já foi inicializado (temporariamente, podemos até comentar isso para forçar)
+                const isAlreadyInitialized = countrySelect.hasClass('select2-hidden-accessible');
+                // console.log('[DEBUG] Select #country já inicializado (tem classe select2-hidden-accessible)?', isAlreadyInitialized);
+
+                // !! DESCOMENTE A LINHA ABAIXO APENAS PARA TESTAR SE O IF está bloqueando !!
+                // if (true || !isAlreadyInitialized) { // Força a tentativa de inicialização
+
+                if (!isAlreadyInitialized) { // Condição normal: só inicializa se não tiver sido antes
+                    // console.log('[DEBUG] Tentando chamar .select2() em #country...');
+                    try {
+                        // 5. Tenta INICIALIZAR o Select2
+                        countrySelect.select2({
+                            theme: 'bootstrap4',
+                            placeholder: "Selecione o País", // Placeholder de teste
+                            allowClear: true
+                        });
+                        // console.log('[DEBUG] SUCESSO: Chamada .select2() para #country completada sem erros.');
+                        // Verifique o elemento no console do navegador após esta linha, ele DEVERIA ter mudado
+                        // console.log('[DEBUG] Elemento #country após tentativa de inicialização:', $(containerElement).find('#country')[0]);
+
+                    } catch (error) {
+                        // 6. Captura erros durante a inicialização
+                        console.error('[DEBUG] ERRO durante a chamada .select2() em #country:', error);
+                    }
+                } else {
+                    console.log('[DEBUG] Inicialização do #country pulada porque já parecia inicializado.');
+                }
+            } else {
+                console.error(`[DEBUG] ERRO: Elemento #country NÃO FOI ENCONTRADO dentro do container do Passo ${stepNumber}. Verifique o HTML carregado ou se há IDs duplicados.`);
+                // Verifique se o HTML dentro de containerElement realmente contém o <select id="country">
+                // console.log('[DEBUG] Conteúdo atual do container:', containerElement.innerHTML);
             }
 
+            // Inicialização de outros componentes... (removido para simplificar o teste)
+        }
+
+
+
+
+
+
+
+
+
+        let currentStep = 1;
+        const totalSteps = 7; // Defina o número total de passos
+
+        // SUBSTITUA SUA FUNÇÃO loadStepContent POR ESTA:
+        async function loadStepContent(stepNumber) {
+            const containerId = `step-${stepNumber}`;
+            // ATENÇÃO: Confirme se este caminho está correto para sua estrutura no GitHub Pages
+            const stepFile = `./assets/html/passo${stepNumber}.html`;
+            const container = document.getElementById(containerId);
+
+            // console.log(`[DEBUG] loadStepContent INICIADA para step ${stepNumber}. Path: ${stepFile}`); // Log inicial
+
+            if (!container) {
+                console.error(`[DEBUG] Container #${containerId} NÃO encontrado.`);
+                return; // Sai se o container do passo não existe
+            }
+            // console.log(`[DEBUG] Container #${containerId} encontrado.`);
+
+            // Verifica se já foi carregado para evitar trabalho desnecessário (lazy loading)
+            if (container.dataset.loaded === 'true') {
+                console.log(`[DEBUG] Passo ${stepNumber} já marcado como carregado ('data-loaded=true'). Verificando inicialização.`);
+                // Chama a inicialização novamente para garantir, caso tenha se perdido
+                initializeComponentsInStep(container, stepNumber);
+                return; // Sai da função de carregamento
+            }
+
+            // Mostra indicador de carregamento
+            container.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
+
+            // Bloco ÚNICO e CORRETO para buscar e inicializar
             try {
+                // console.log(`[DEBUG] Fetching ${stepFile}...`);
                 const response = await fetch(stepFile);
+                // console.log(`[DEBUG] Fetch status para ${stepFile}: ${response.status}`);
+
                 if (!response.ok) {
-                    throw new Error(`Erro ao buscar ${stepFile}: ${response.statusText}`);
+                    throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
                 }
+
                 const html = await response.text();
+                // console.log(`[DEBUG] HTML recebido para Passo ${stepNumber}. Injetando...`);
                 container.innerHTML = html; // Insere o HTML carregado
-                container.dataset.loaded = 'true'; // Marca como carregado
+                container.dataset.loaded = 'true'; // Marca como carregado APÓS sucesso
+                // console.log(`[DEBUG] HTML injetado. Chamando initializeComponentsInStep...`);
+
+                // *** CHAMA A INICIALIZAÇÃO NO LUGAR CERTO ***
+                initializeComponentsInStep(container, 'Passo ');
+                // console.log(`[DEBUG] Retornou de initializeComponentsInStep para Passo ${stepNumber}.`);
+
             } catch (error) {
-                console.error('Falha ao carregar passo:', error);
-                container.innerHTML = '<p class="text-danger">Erro ao carregar conteúdo do passo.</p>';
+                console.error(`[DEBUG] ERRO no bloco try/catch de loadStepContent para Passo ${stepNumber}:`, error);
+                if (container) { // Verifica se container ainda existe
+                    container.innerHTML = `<p class="text-danger text-center fw-bold p-4">Erro ao carregar conteúdo do Passo ${stepNumber}.<br><small>Verifique o console (F12) e o caminho do arquivo: ${stepFile}</small></p>`;
+                }
             }
         }
 

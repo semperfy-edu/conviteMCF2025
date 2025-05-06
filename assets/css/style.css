@@ -634,3 +634,7 @@ td {
     cursor: not-allowed;
 }
 
+.select2-dropdown {
+    top: 22px !important;
+    left: 8px !important;
+   }
