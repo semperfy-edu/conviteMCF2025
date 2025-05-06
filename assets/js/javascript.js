@@ -82,22 +82,34 @@ function initializeComponentsInStep(containerElement, stepNumber) {
         const $select = $(this);
         if (!$select.hasClass('select2-hidden-accessible')) {
             $select.select2({
-                theme: 'bootstrap4',
+                theme: 'bootstrap-5',  // Corrigido de bootstrap4 para bootstrap-5
                 placeholder: `Selecione uma opção`,
-                allowClear: true
+                allowClear: true,
+                width: '100%'          // Garante que o select2 ocupe toda a largura do container
             });
+            
+            // Adicionar atributo name se não existir
+            if (!$select.attr('name') && $select.attr('id')) {
+                $select.attr('name', $select.attr('id'));
+                console.log(`Adicionado name=${$select.attr('id')} ao select`);
+            }
         }
     });
     
     // Inicializa máscaras para inputs específicos se necessário
     const cpfInput = $(containerElement).find('#cpf');
-    if (cpfInput.length > 0 && typeof cpfInput.mask === 'function') {
+    if (cpfInput.length > 0 && typeof $.fn.mask === 'function') {
         cpfInput.mask('000.000.000-00');
     }
     
     const telefoneInput = $(containerElement).find('#telefone, #celular');
-    if (telefoneInput.length > 0 && typeof telefoneInput.mask === 'function') {
+    if (telefoneInput.length > 0 && typeof $.fn.mask === 'function') {
         telefoneInput.mask('(00) 00000-0000');
+    }
+    
+    const cepInput = $(containerElement).find('#cep');
+    if (cepInput.length > 0 && typeof $.fn.mask === 'function') {
+        cepInput.mask('00000-000');
     }
 }
 
