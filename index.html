@@ -1,131 +1,68 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário Multi-etapas</title>
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
-    
-    <!-- jQuery Mask Plugin CSS (opcional) -->
-    <style>
-        .form-select {
-            display: block;
-            width: 100%;
-            padding: 10px 15px;
-            font-size: 16px;
-            background-color: #fff;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            appearance: auto; /* Importante: permite que o select tenha aparência nativa */
-            cursor: pointer;
-        }
-        /* Estilos personalizados */
-        .form-step {
-            display: none;
-        }
-        
-        .form-step.active {
-            display: block;
-        }
-        
-        .progress {
-            height: 30px;
-        }
-        
-        .progress-bar {
-            transition: width 0.5s ease;
-            font-size: 14px;
-            line-height: 30px;
-        }
-        
-        /* Animação para transição de passos */
-        .form-step {
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .form-step.active {
-            opacity: 1;
-        }
-    </style>
+
+
 </head>
+
 <body>
-    <div class="container mt-4">
-        <div class="card shadow mb-4">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Formulário de Cadastro</h4>
-            </div>
-            
-            <div class="progress m-3">
-                <div class="progress-bar bg-primary" role="progressbar" style="width: 14%;" 
-                     aria-valuenow="1" aria-valuemin="0" aria-valuemax="7">
-                    Passo 1
-                </div>
-            </div>
-            
-            <div class="card-body p-4">
-                <form id="multiStepForm">
-                    <div id="step-1" class="form-step">
-                        <p>Carregando Passo 1...</p>
-                    </div>
-
-                    <div id="step-2" class="form-step">
-                        <p>Carregando Passo 2...</p>
-                    </div>
-
-                    <div id="step-3" class="form-step">
-                        <p>Carregando Passo 3...</p>
-                    </div>
-
-                    <div id="step-4" class="form-step">
-                        <p>Carregando Passo 4...</p>
-                    </div>
-
-                    <div id="step-5" class="form-step">
-                        <p>Carregando Passo 5...</p>
-                    </div>
-
-                    <div id="step-6" class="form-step">
-                        <p>Carregando Passo 6...</p>
-                    </div>
-
-                    <div id="step-7" class="form-step">
-                        <p>Carregando Passo 7...</p>
-                    </div>
-
-                    <!-- Botões de navegação -->
-                    <div class="d-flex justify-content-between mt-4">
-                        <button type="button" class="btn btn-secondary" id="prevBtn" onclick="navigateStep(-1)" disabled>
-                            <i class="bi bi-arrow-left"></i> Anterior
-                        </button>
-                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="navigateStep(1)">
-                            Próximo <i class="bi bi-arrow-right"></i>
-                        </button>
-                        <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
-                            <i class="bi bi-check-lg"></i> Enviar
-                        </button>
-                    </div>
-                    
-                    <!-- Área para feedback -->
-                    <div id="status" class="alert mt-3" style="display: none;"></div>
-                </form>
+    <div class="container">
+    <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center pt-3 pt-sm-0 bg-light">
+        <div class="w-100 mt-3 px-3 py-2 bg-white shadow overflow-hidden rounded-2 mx-auto" style="max-width: 540px;">
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <img src="./assets/img/earth_logo.png" class="m-3" alt="Logo" style="height: 3.25rem;">
+                    <p class="text-center">Prezado(a) Doutor(a), é com grande satisfação que o(a) convidamos a
+                        participar. Por favor, preencha o formulário abaixo para realizar sua inscrição.</p>
+                </blockquote>
+            </figure>
+            <div class="d-flex justify-content-center m-3">
+                <a class="btn btn-info border shadow" href="./assets/html/multisteps.html" role="button">Preencher
+                    Formulário</a>
             </div>
         </div>
     </div>
+</div>
+    <!-- <div class="container mt-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0 d-flex justify-content-center">Congresso Brasileiro de Cannabis Medicinal 2025</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                <img src="./assets/img/earth_logo.png" class="rounded mx-auto d-block" alt="...">
+            </div>
+                <figure class="text-center">
+                    <blockquote class="blockquote">
+                      <p class="mb-3">Prezado(a) Doutor(a), é com grande satisfação que o(a) convidamos a participar. Por favor, preencha o formulário abaixo para realizar sua inscrição.</p>
+                    
+                    </blockquote>
+                    <figcaption class="blockquote-footer">
+                      Someone famous in <cite title="Source Title">Source Title</cite>
+                    </figcaption>
+                  </figure>
+
+                     Botões de navegação -->
+    <!-- <div class="d-flex justify-content-center mt-4">                       
+                        <a class="btn btn-primary">Responder Questionario</a>
+                    </div>
+                     -->
+    <!-- Área para feedback -->
+    <!-- <div id="status" class="alert mt-3" style="display: none;"></div>
+               
+            </div>
+        </div>
+    </div> -->
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    
-    <!-- Seu script principal (armazenado em arquivo separado) -->
-    <script src="./assets/js/javascript.js"></script>
 </body>
+
 </html>

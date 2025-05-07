@@ -29,7 +29,7 @@ function showStep(stepNumber) {
 // Função para carregar o conteúdo do passo
 async function loadStepContent(stepNumber) {
     const containerId = `step-${stepNumber}`;
-    const stepFile = `./assets/html/passo${stepNumber}.html`;
+    const stepFile = `../html/passo${stepNumber}.html`;
     const container = document.getElementById(containerId);
 
     if (!container) {
