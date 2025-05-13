@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adiciona handler de submit ao formulário
     const form = document.getElementById('multiStepForm');
     if (form) {
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwcMyYLy7lM6EASZzCGF4sRsYKH2xo7bCJfh7cPZm61Lo4pPuwZuhyDEvI52zPYgqVbJw/exec';
+        const scriptURL = 'https://script.google.com/macros/s/YLy7lM6EASZzCGF4sRsYKH2xo7bCJfh7cPZm61Lo4pPuwZuhyDEvI52zPYgqVbJw/exec';
         form.addEventListener('submit', (event) => {
             handleFormSubmit(event, scriptURL);
         });
